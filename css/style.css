@@ -1,0 +1,47 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    position: relative;
+    margin: 0;
+    padding-bottom: 100px;
+    background: url("../img/Amazing-Pokemon-Background-Wallpaper.jpg") no-repeat
+        center center fixed;
+    background-size: cover;
+}
+
+h2 {
+    text-decoration: underline;
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 4rem;
+}
+
+.custom {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    line-height: 16px;
+    max-height: 96px;
+}
+.opct {
+    opacity: 0.8;
+}
+
+ul {
+    list-style-type: none;
+}
+
+img {
+    height: 30vh;
+    width: 30vw;
+}
+
