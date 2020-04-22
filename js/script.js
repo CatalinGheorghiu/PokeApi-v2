@@ -90,7 +90,7 @@ $(document).ready(function () {
     function fetchOnClick(item, limit, offset = 0) {
         return function (e) {
             fetchData(item, limit, offset);
-            // e.preventDefault();
+            e.preventDefault();
         };
     }
 
@@ -98,7 +98,8 @@ $(document).ready(function () {
         pokeListItem.addEventListener("click", function (e) {
             e.preventDefault();
             const itemUrl = pokeListItem.getAttribute("data-id");
-            fetchDetails(itemUrl);
+            const dataType = pokeListItem.getAttribute("data-type-list");
+            fetchDetails(itemUrl, dataType);
         });
     }
 
@@ -158,6 +159,7 @@ $(document).ready(function () {
                     const url = resultData["url"];
                     let splitUrl = url.split("/");
                     let idFromUrl = splitUrl[splitUrl.length - 2];
+                    let dataType = splitUrl[splitUrl.length - 3];
                     // console.log(idFromUrl);
 
                     //Fill the HTML with the data
@@ -166,6 +168,7 @@ $(document).ready(function () {
 
                     // pokeListItemsDetail.textContent = url;
                     pokeListItem.setAttribute("data-id", `${url}`);
+                    pokeListItem.setAttribute("data-type-list", `${dataType}`);
                     // console.log(pokeListItem);
 
                     if (pokeListItem.innerHTML == "") {
@@ -181,29 +184,57 @@ $(document).ready(function () {
         });
     }
 
-    function fetchDetails(url) {
-        $.ajax({
-            type: "GET",
-            url: `${url}`,
-            data: {},
-            success: function (data) {
-                console.log(data);
-                $(".item-id").empty();
-                $(".item-name").empty();
-                $(".img").empty();
+    function fetchDetails(url, dataType) {
+        switch (dataType) {
+            case "pokemon":
+                fetchDetailsPokemon(url);
+                break;
+            default:
+                showError(dataType);
+                break;
+        }
 
-                try {
-                    $(".item-id").text(`ID: ${data.id}`);
-                    $(".item-name").text(`Name: ${data.name}`);
-                    $(".img").attr("src", `${data.sprites.front_default}`);
-                } catch (e) {
-                    if (e) {
-                        // If fails, Do something else
-                        $(".item-name").text("No data available");
-                        $(".img").attr("src", "");
+        function fetchDetailsPokemon(url) {
+            $.ajax({
+                type: "GET",
+                url: `${url}`,
+                data: {},
+                success: function (data) {
+                    // console.log(data);
+                    let ability = data["abilities"];
+                    // console.log(ability);
+                    let ability1 = data["abilities"][0]["ability"]["name"];
+                    let ability2 = data["abilities"][1]["ability"]["name"];
+                    let exp = data["base_experience"];
+                    let height = data["height"];
+                    let id = data["id"];
+                    let name = data["name"];
+                    let img1 = data["sprites"]["front_default"];
+                    let img2 = data["sprites"]["back_default"];
+                    let type = data["types"];
+                    console.log(type);
+                    if (type.length > 1) {
+                        let type2 = data["types"][1]["type"]["name"];
+                        $(".item-type-2").text(`Type no. 2: ${type2}`);
                     }
-                }
-            },
-        });
+                    let type1 = data["types"][0]["type"]["name"];
+                    let weight = data["weight"];
+                    $(".item-ability-1").text(`Ability no. 1 : ${ability1}`);
+                    $(".item-ability-2").text(`Ability no. 2 : ${ability2}`);
+                    $(".item-exp").text(`Experience: ${exp}`);
+                    $(".item-height").text(`Height: ${height}`);
+                    $(".item-id").text(`ID: ${id}`);
+                    $(".item-name").text(`Name: ${name}`);
+                    $(".item-img-1").attr("src", `${img1}`);
+                    $(".item-img-2").attr("src", `${img2}`);
+                    $(".item-type-1").text(`Type no. 1 : ${type1}`);
+                    $(".item-weight").text(`Weight: ${weight}`);
+                },
+            });
+        }
+
+        function showError(dataType) {
+            console.log(`${dataType} error`);
+        }
     }
 });
