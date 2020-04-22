@@ -8,6 +8,7 @@ let pokeListItems = document.querySelectorAll(".item");
 let pokeListItemsDetails = document.querySelectorAll(".item-details");
 let details = document.querySelector(".item-detail");
 let img = document.querySelectorAll(".img");
+// console.log(img);
 let itemIds = document.querySelectorAll(".item-id");
 // console.log(itemId);
 // let itemName = document.querySelectorAll(".item-name");
@@ -186,10 +187,11 @@ function fetchDetails(url) {
         success: function (data) {
             $(".item-id").empty();
             $(".item-name").empty();
-            
-            console.log(data);
+
+            console.log(data.sprites.front_default);
             $(".item-id").text(data.id);
             $(".item-name").text(data.name);
+            $(".img").attr("src", `${data.sprites.front_default}`);
         },
     });
 }
