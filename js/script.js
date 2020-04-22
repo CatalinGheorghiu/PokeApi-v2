@@ -1,10 +1,16 @@
 // Get the current year for the copyright
 $("#year").text(new Date().getFullYear());
+
+//
 let pokeListIds = document.querySelectorAll(".id");
 let pokeListItems = document.querySelectorAll(".item");
 // console.log(pokeListItems)
 let pokeListItemsDetails = document.querySelectorAll(".item-details");
 let details = document.querySelector(".item-detail");
+let img = document.querySelectorAll(".img");
+let itemIds = document.querySelectorAll(".item-id");
+// console.log(itemId);
+// let itemName = document.querySelectorAll(".item-name");
 // console.log(detail);
 
 $(document).ready(function () {
@@ -88,6 +94,14 @@ function fetchOnClick(item, limit, offset = 0) {
     };
 }
 
+for (const pokeListItem of pokeListItems) {
+    pokeListItem.addEventListener("click", function (e) {
+        e.preventDefault();
+        const itemUrl = pokeListItem.getAttribute("data-id");
+        fetchDetails(itemUrl);
+    });
+}
+
 function fetchData(item, limit, offset = 0) {
     $.ajax({
         type: "GET",
@@ -140,14 +154,16 @@ function fetchData(item, limit, offset = 0) {
                 //Id from Url
                 const url = resultData["url"];
                 let splitUrl = url.split("/");
-
                 let idFromUrl = splitUrl[splitUrl.length - 2];
-                pokeListItem.classList.add(`${idFromUrl}`);
                 // console.log(idFromUrl);
 
+                //Fill the HTML with the data
                 pokeListItem.textContent = name;
                 pokeListId.textContent = idFromUrl;
-                pokeListItemsDetail.textContent = url;
+
+                // pokeListItemsDetail.textContent = url;
+                pokeListItem.setAttribute("data-id", `${url}`);
+                // console.log(pokeListItem);
 
                 if (pokeListItem.innerHTML == "") {
                     pokeListItem.textContent = "No data available ";
@@ -162,16 +178,18 @@ function fetchData(item, limit, offset = 0) {
     });
 }
 
-
-
-function fetchDetails(targetId) {
+function fetchDetails(url) {
     $.ajax({
         type: "GET",
-        url: `https://pokeapi.co/api/v2/pokemon/${targetId}`,
+        url: `${url}`,
         data: {},
         success: function (data) {
-            targetId = "";
-            console.log(data["name"]);
+            $(".item-id").empty();
+            $(".item-name").empty();
+            
+            console.log(data);
+            $(".item-id").text(data.id);
+            $(".item-name").text(data.name);
         },
     });
 }
