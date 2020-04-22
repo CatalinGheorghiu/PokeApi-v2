@@ -187,11 +187,19 @@ function fetchDetails(url) {
         success: function (data) {
             $(".item-id").empty();
             $(".item-name").empty();
+            $(".img").empty();
 
-            console.log(data.sprites.front_default);
-            $(".item-id").text(data.id);
-            $(".item-name").text(data.name);
-            $(".img").attr("src", `${data.sprites.front_default}`);
+            try {
+                $(".item-id").text(`ID: ${data.id}`);
+                $(".item-name").text(`Name: ${data.name}`);
+                $(".img").attr("src", `${data.sprites.front_default}`);
+            } catch (e) {
+                if (e) {
+                    // If fails, Do something else
+                    $(".item-name").text("No data available");
+                    $(".img").attr("src", "");
+                }
+            }
         },
     });
 }
