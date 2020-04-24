@@ -33,7 +33,7 @@ footer {
     max-height: 96px;
 }
 .opct {
-    opacity: 0.8;
+    opacity: 0.95;
 }
 
 ul {
@@ -46,5 +46,12 @@ span.item {
 }
 
 button.btn.btn-success.item {
-    width: 7rem;
+    width: 10rem;
+}
+
+.hide {
+    display: none;
+}
+.red{
+    color: red;
 }

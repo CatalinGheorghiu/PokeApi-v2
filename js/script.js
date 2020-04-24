@@ -7,6 +7,8 @@ let img = document.querySelectorAll(".img");
 let itemIds = document.querySelectorAll(".item-id");
 let title = document.querySelectorAll(".section-title");
 let showClass = document.querySelectorAll(".show");
+let btns = document.querySelectorAll("button.item");
+let cards = document.querySelectorAll(".card");
 
 $(document).ready(function () {
     /* Hide buttons ##################################### */
@@ -121,7 +123,7 @@ $(document).ready(function () {
             type: "GET",
             url: `https://pokeapi.co/api/v2/${item}/?offset=${offset}&&limit=${limit}`,
             success: function (data) {
-                console.log(data);
+                // console.log(data);
                 $(".section-title").empty();
                 let itemName = capitalizeFirstLetter(`${item}`);
                 $(".section-title").append(`${itemName} (${data.count})`);
@@ -161,32 +163,46 @@ $(document).ready(function () {
 
                 //Display Data
                 let dataResults = data["results"];
-                for (let i = 0; i < dataResults.length; i++) {
+                for (let i = 0; i < cards.length; i++) {
                     //Html item && id
                     const pokeListItem = pokeListItems[i];
                     const pokeListId = pokeListIds[i];
                     const pokeListItemsDetail = pokeListItemsDetails[i];
+                    const card = cards[i];
 
                     //Data object
                     const resultData = dataResults[i];
-                    //Name
-                    let name = resultData["name"];
-                    //Id from Url
-                    const url = resultData["url"];
-                    let splitUrl = url.split("/");
-                    let idFromUrl = splitUrl[splitUrl.length - 2];
-                    let dataType = splitUrl[splitUrl.length - 3];
 
-                    //Fill the HTML with the data
-                    pokeListItem.textContent = name;
-                    pokeListId.textContent = idFromUrl;
+                    try {
+                        //Name
+                        let name = resultData["name"];
+                        // console.log(name);
+                        //Id from Url
+                        const url = resultData["url"];
+                        let splitUrl = url.split("/");
+                        let idFromUrl = splitUrl[splitUrl.length - 2];
+                        let dataType = splitUrl[splitUrl.length - 3];
 
-                    // pokeListItemsDetail.textContent = url;
-                    pokeListItem.setAttribute("data-id", `${url}`);
-                    pokeListItem.setAttribute("data-type-list", `${dataType}`);
+                        //Fill the HTML with the data
+                        pokeListId.textContent = idFromUrl;
+                        // pokeListItemsDetail.textContent = url;
+                        pokeListItem.setAttribute("data-id", `${url}`);
+                        pokeListItem.setAttribute(
+                            "data-type-list",
+                            `${dataType}`
+                        );
 
-                    if (pokeListItem.innerHTML == "") {
-                        pokeListItem.textContent = "Details";
+                        if (name == undefined || name == null) {
+                            pokeListItem.textContent = "Details";
+                        } else {
+                            pokeListItem.textContent = capitalizeFirstLetter(
+                                name
+                            );
+                        }
+                    } catch (error) {
+                        if (error) {
+                            card.remove();
+                        }
                     }
                 }
             },
