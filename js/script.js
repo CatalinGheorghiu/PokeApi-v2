@@ -96,6 +96,7 @@ $(document).ready(function () {
 */
     function fetchOnClick(item, limit, offset = 0) {
         $("div").removeClass("show");
+        // $(".section-title").empty();
         return function (e) {
             fetchData(item, limit, offset);
             e.preventDefault();
@@ -111,12 +112,19 @@ $(document).ready(function () {
         });
     }
 
+    function capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
     function fetchData(item, limit, offset = 0) {
         $.ajax({
             type: "GET",
             url: `https://pokeapi.co/api/v2/${item}/?offset=${offset}&&limit=${limit}`,
             success: function (data) {
-                $(".section-title").append(` (${data.count})`);
+                console.log(data);
+                $(".section-title").empty();
+                let itemName = capitalizeFirstLetter(`${item}`);
+                $(".section-title").append(`${itemName} (${data.count})`);
                 $(".id").empty();
                 $(".item").empty();
                 $(".container").show();

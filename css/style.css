@@ -44,3 +44,7 @@ span.item {
     /* border: 2px solid; */
     padding: 0.75rem;
 }
+
+button.btn.btn-success.item {
+    width: 7rem;
+}
