@@ -127,11 +127,14 @@ $(document).ready(function () {
                 $(".section-title").empty();
                 let itemName = capitalizeFirstLetter(`${item}`);
                 $(".section-title").append(`${itemName} (${data.count})`);
+
                 $(".id").empty();
                 $(".item").empty();
                 $(".container").show();
+
                 $("#next").show();
                 $("#prev").show();
+
                 const next = data.next;
                 const prev = data.previous;
                 //If the next URL is available
@@ -163,46 +166,35 @@ $(document).ready(function () {
 
                 //Display Data
                 let dataResults = data["results"];
-                for (let i = 0; i < cards.length; i++) {
+                for (let i = 0; i < dataResults.length; i++) {
                     //Html item && id
                     const pokeListItem = pokeListItems[i];
                     const pokeListId = pokeListIds[i];
                     const pokeListItemsDetail = pokeListItemsDetails[i];
-                    const card = cards[i];
 
                     //Data object
                     const resultData = dataResults[i];
+                    console.log(resultData);
 
-                    try {
-                        //Name
-                        let name = resultData["name"];
-                        // console.log(name);
-                        //Id from Url
-                        const url = resultData["url"];
-                        let splitUrl = url.split("/");
-                        let idFromUrl = splitUrl[splitUrl.length - 2];
-                        let dataType = splitUrl[splitUrl.length - 3];
+                    //Name
+                    let name = resultData["name"];
+                    // console.log(name);
+                    //Id from Url
+                    const url = resultData["url"];
+                    let splitUrl = url.split("/");
+                    let idFromUrl = splitUrl[splitUrl.length - 2];
+                    let dataType = splitUrl[splitUrl.length - 3];
 
-                        //Fill the HTML with the data
-                        pokeListId.textContent = idFromUrl;
-                        // pokeListItemsDetail.textContent = url;
-                        pokeListItem.setAttribute("data-id", `${url}`);
-                        pokeListItem.setAttribute(
-                            "data-type-list",
-                            `${dataType}`
-                        );
+                    //Fill the HTML with the data
+                    pokeListId.textContent = idFromUrl;
+                    // pokeListItemsDetail.textContent = url;
+                    pokeListItem.setAttribute("data-id", `${url}`);
+                    pokeListItem.setAttribute("data-type-list", `${dataType}`);
 
-                        if (name == undefined || name == null) {
-                            pokeListItem.textContent = "Details";
-                        } else {
-                            pokeListItem.textContent = capitalizeFirstLetter(
-                                name
-                            );
-                        }
-                    } catch (error) {
-                        if (error) {
-                            card.remove();
-                        }
+                    if (name == undefined || name == null) {
+                        pokeListItem.textContent = "Details";
+                    } else {
+                        pokeListItem.textContent = capitalizeFirstLetter(name);
                     }
                 }
             },
@@ -215,6 +207,18 @@ $(document).ready(function () {
     }
 
     function fetchDetails(url, dataType) {
+        $(".item-img-1").hide();
+        $(".item-img-2").hide();
+
+        $(".item-ability-1").hide();
+        $(".item-ability-2").hide();
+        $(".item-id").hide();
+        $(".item-weight").hide();
+        $(".item-name").hide();
+        $(".item-exp").hide();
+        $(".item-height").hide();
+        $(".item-type-1").hide();
+        $(".item-type-2").hide();
         switch (dataType) {
             case "berry":
                 fetchDetailsBerry(url);
@@ -256,19 +260,6 @@ $(document).ready(function () {
                 type: "GET",
                 url: `${url}`,
                 success: function (data) {
-                    $(".item-img-1").hide();
-                    $(".item-img-2").hide();
-
-                    $(".item-ability-1").show();
-                    $(".item-ability-2").show();
-                    $(".item-id").show();
-                    $(".item-weight").show();
-                    $(".item-name").show();
-                    $(".item-exp").show();
-                    $(".item-height").show();
-                    $(".item-type-1").show();
-                    $(".item-type-2").show();
-
                     let firmness = data["firmness"]["name"];
                     let growth = data["growth_time"];
                     let id = data["id"];
@@ -281,15 +272,19 @@ $(document).ready(function () {
                     let smooth = data["smoothness"];
                     let soil = data["soil_dryness"];
 
-                    $(".item-ability-1").text(`Firmness : ${firmness}`);
-                    $(".item-ability-2").text(`Growth time : ${growth}`);
-                    $(".item-id").text(`ID: ${id}`);
-                    $(".item-weight").text(`Item : ${item}`);
-                    $(".item-name").text(`Item : ${name}`);
-                    $(".item-exp").text(`Max harvest : ${harvest}`);
-                    $(".item-height").text(`Name: ${size}`);
-                    $(".item-type-1").text(`Natural gift power : ${power}`);
-                    $(".item-type-2").text(`Natural gift type : ${gift}`);
+                    $(".item-ability-1").text(`Firmness : ${firmness}`).show();
+                    $(".item-ability-2").text(`Growth time : ${growth}`).show();
+                    $(".item-id").text(`ID: ${id}`).show();
+                    $(".item-weight").text(`Item : ${item}`).show();
+                    $(".item-name").text(`Item : ${name}`).show();
+                    $(".item-exp").text(`Max harvest : ${harvest}`).show();
+                    $(".item-height").text(`Name: ${size}`).show();
+                    $(".item-type-1")
+                        .text(`Natural gift power : ${power}`)
+                        .show();
+                    $(".item-type-2")
+                        .text(`Natural gift type : ${gift}`)
+                        .show();
                 },
             });
         }
