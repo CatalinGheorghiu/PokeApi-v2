@@ -151,6 +151,9 @@ $(document).ready(function () {
                     $("#next")
                         .off("click")
                         .on("click", fetchOnClick(item, limit, offset + 10));
+                } else if (prev === null && next === null) {
+                    $("#next").prop("disabled", true);
+                    $("#prev").prop("disabled", true);
                 } else {
                     //If the next URL is unavailable , button is deactivated
                     $("#next").prop("disabled", true);
