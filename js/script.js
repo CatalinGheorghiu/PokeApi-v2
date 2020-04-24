@@ -7,7 +7,6 @@ let img = document.querySelectorAll(".img");
 let itemIds = document.querySelectorAll(".item-id");
 let title = document.querySelectorAll(".section-title");
 let showClass = document.querySelectorAll(".show");
-let btns = document.querySelectorAll("button.item");
 let cards = document.querySelectorAll(".card");
 
 $(document).ready(function () {
@@ -22,7 +21,6 @@ $(document).ready(function () {
         // $("div").removeClass("show");
         //Make request to PokeAPI
         fetchData("berry", 10);
-        $(".section-title").text("Berrys");
     });
 
     /* Contest data #######################################*/
@@ -30,21 +28,18 @@ $(document).ready(function () {
         $("div").removeClass("show");
         //Make request to PokeAPI
         fetchData("contest-type", 10);
-        $(".section-title").text("Contests");
     });
 
     /* Encounter data #####################################*/
     $("#encounters").click(function () {
         //Make request to PokeAPI
         fetchData("encounter-method", 10);
-        $(".section-title").text("Encounters");
     });
 
     /* Evolution data #######################################*/
     $("#evolution").click(function () {
         //Make request to PokeAPI
         fetchData("evolution-chain", 10);
-        $(".section-title").text("Evolution");
     });
 
     /* Generation data ########################################*/
@@ -52,35 +47,30 @@ $(document).ready(function () {
         $("div").removeClass("show");
         //Make request to PokeAPI
         fetchData("generation", 10);
-        $(".section-title").text("Games");
     });
 
     /* Item data ################################################*/
     $("#items").click(function () {
         //Make request to PokeAPI
         fetchData("item", 10);
-        $(".section-title").text("Items");
     });
 
     /* Location data #############################################*/
     $("#location").click(function () {
         //Make request to PokeAPI
         fetchData("location", 10);
-        $(".section-title").text("Locations");
     });
 
     /* Machines data #############################################*/
     $("#machines").click(function () {
         //Make request to PokeAPI
         fetchData("machine", 10);
-        $(".section-title").text("Machines");
     });
 
     /* Move data #################################################*/
     $("#moves").click(function () {
         //Make request to PokeAPI
         fetchData("move", 10);
-        $(".section-title").text("Moves");
     });
 
     /* Move data #################################################*/
@@ -88,7 +78,6 @@ $(document).ready(function () {
         // $("div").removeClass("show");
         //Make request to PokeAPI
         fetchData("pokemon", 10);
-        $(".section-title").text("Pokemons");
     });
 
     /* 
@@ -98,7 +87,6 @@ $(document).ready(function () {
 */
     function fetchOnClick(item, limit, offset = 0) {
         $("div").removeClass("show");
-        // $(".section-title").empty();
         return function (e) {
             fetchData(item, limit, offset);
             e.preventDefault();
@@ -110,7 +98,8 @@ $(document).ready(function () {
             e.preventDefault();
             const itemUrl = pokeListItem.getAttribute("data-id");
             const dataType = pokeListItem.getAttribute("data-type-list");
-            fetchDetails(itemUrl, dataType);
+            const idCollapse = pokeListItem.getAttribute("aria-controls");
+            fetchDetails(itemUrl, dataType, idCollapse);
         });
     }
 
@@ -123,7 +112,6 @@ $(document).ready(function () {
             type: "GET",
             url: `https://pokeapi.co/api/v2/${item}/?offset=${offset}&&limit=${limit}`,
             success: function (data) {
-                // console.log(data);
                 $(".section-title").empty();
                 let itemName = capitalizeFirstLetter(`${item}`);
                 $(".section-title").append(`${itemName} (${data.count})`);
@@ -174,11 +162,9 @@ $(document).ready(function () {
 
                     //Data object
                     const resultData = dataResults[i];
-                    console.log(resultData);
 
                     //Name
                     let name = resultData["name"];
-                    // console.log(name);
                     //Id from Url
                     const url = resultData["url"];
                     let splitUrl = url.split("/");
@@ -197,6 +183,54 @@ $(document).ready(function () {
                         pokeListItem.textContent = capitalizeFirstLetter(name);
                     }
                 }
+
+                // if (dataResults.length < cards.length) {
+                //     for (let i = 0; i <= cards.length; i++) {
+                //         console.log(i > dataResults.length);
+                //         if (i == 1) {
+                //             i > dataResults.length
+                //                 ? $("#headingOne").hide()
+                //                 : $("#headingOne").show();
+                //         } else if (i == 2) {
+                //             i > dataResults.length
+                //                 ? $("#headingTwo").hide()
+                //                 : $("#headingTwo").show();
+                //         } else if (i == 3) {
+                //             i > dataResults.length
+                //                 ? $("#headingThree").hide()
+                //                 : $("#headingThree").show();
+                //         } else if (i == 4) {
+                //             i > dataResults.length
+                //                 ? $("#headingFour").hide()
+                //                 : $("#headingFour").show();
+                //         } else if (i == 5) {
+                //             i > dataResults.length
+                //                 ? $("#headingFive").hide()
+                //                 : $("#headingFive").show();
+                //         } else if (i == 6) {
+                //             i > dataResults.length
+                //                 ? $("#headingSix").hide()
+                //                 : $("#headingSix").show();
+                //         } else if (i == 7) {
+                //             i > dataResults.length
+                //                 ? $("#headingSeven").hide()
+                //                 : $("#headingSeven").show();
+                //         } else if (i == 8) {
+                //             i > dataResults.length
+                //                 ? $("#headingEight").hide()
+                //                 : $("#headingEight").show();
+                //         } else if (i == 9) {
+                //             i > dataResults.length
+                //                 ? $("#headingNine").hide()
+                //                 : $("#headingNine").show();
+                //         } else if (i == 10) {
+                //             i > dataResults.length
+                //                 ? $("#headingTen").hide()
+                //                 : $("#headingTen").show();
+                //         }
+                //         //----- etc ----//
+                //     }
+                // }
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 console.log(jqXHR);
@@ -206,7 +240,7 @@ $(document).ready(function () {
         });
     }
 
-    function fetchDetails(url, dataType) {
+    function fetchDetails(url, dataType, idCollapse) {
         $(".item-img-1").hide();
         $(".item-img-2").hide();
 
@@ -272,17 +306,31 @@ $(document).ready(function () {
                     let smooth = data["smoothness"];
                     let soil = data["soil_dryness"];
 
-                    $(".item-ability-1").text(`Firmness : ${firmness}`).show();
-                    $(".item-ability-2").text(`Growth time : ${growth}`).show();
-                    $(".item-id").text(`ID: ${id}`).show();
-                    $(".item-weight").text(`Item : ${item}`).show();
-                    $(".item-name").text(`Item : ${name}`).show();
-                    $(".item-exp").text(`Max harvest : ${harvest}`).show();
-                    $(".item-height").text(`Name: ${size}`).show();
-                    $(".item-type-1")
+                    $("#" + idCollapse + " .item-ability-1")
+                        .text(`Firmness : ${firmness}`)
+                        .show();
+                    $("#" + idCollapse + " .item-ability-2")
+                        .text(`Growth time : ${growth}`)
+                        .show();
+                    $("#" + idCollapse + " .item-id")
+                        .text(`ID: ${id}`)
+                        .show();
+                    $("#" + idCollapse + " .item-weight")
+                        .text(`Item : ${item}`)
+                        .show();
+                    $("#" + idCollapse + " .item-name")
+                        .text(`Item : ${name}`)
+                        .show();
+                    $("#" + idCollapse + " .item-exp")
+                        .text(`Max harvest : ${harvest}`)
+                        .show();
+                    $("#" + idCollapse + " .item-height")
+                        .text(`Name: ${size}`)
+                        .show();
+                    $("#" + idCollapse + " .item-type-1")
                         .text(`Natural gift power : ${power}`)
                         .show();
-                    $(".item-type-2")
+                    $("#" + idCollapse + " .item-type-2")
                         .text(`Natural gift type : ${gift}`)
                         .show();
                 },
@@ -294,28 +342,23 @@ $(document).ready(function () {
                 type: "GET",
                 url: `${url}`,
                 success: function (data) {
-                    $(".item-img-1").hide();
-                    $(".item-img-2").hide();
-                    $(".item-height").hide();
-                    $(".item-weight").hide();
-                    $(".item-type-1").hide();
-                    $(".item-type-2").hide();
-                    $(".item-name").hide();
-
-                    $(".item-ability-1").show();
-                    $(".item-ability-2").show();
-                    $(".item-id").show();
-                    $(".item-exp").show();
-
                     let flavor = data["berry_flavor"]["name"];
                     let id = data["id"];
                     let name = data["name"];
                     let color = data["names"][0]["color"];
 
-                    $(".item-ability-1").text(`Flavor : ${flavor}`);
-                    $(".item-ability-2").text(`Name : ${name}`);
-                    $(".item-id").text(`ID: ${id}`);
-                    $(".item-exp").text(`Color : ${color}`);
+                    $("#" + idCollapse + " .item-ability-1")
+                        .text(`Flavor : ${flavor}`)
+                        .show();
+                    $("#" + idCollapse + " .item-ability-2")
+                        .text(`Name : ${name}`)
+                        .show();
+                    $("#" + idCollapse + " .item-id")
+                        .text(`ID: ${id}`)
+                        .show();
+                    $("#" + idCollapse + " .item-exp")
+                        .text(`Color : ${color}`)
+                        .show();
                 },
             });
         }
@@ -325,28 +368,23 @@ $(document).ready(function () {
                 type: "GET",
                 url: `${url}`,
                 success: function (data) {
-                    $(".item-img-1").hide();
-                    $(".item-img-2").hide();
-                    $(".item-height").hide();
-                    $(".item-weight").hide();
-                    $(".item-type-1").hide();
-                    $(".item-type-2").hide();
-                    $(".item-name").hide();
-
-                    $(".item-ability-1").show();
-                    $(".item-ability-2").show();
-                    $(".item-id").show();
-                    $(".item-exp").show();
-
                     let id = data["id"];
                     let name = data["name"];
                     let description = data["names"][1]["name"];
                     let order = data["order"];
 
-                    $(".item-id").text(`ID: ${id}`);
-                    $(".item-ability-2").text(`Name : ${name}`);
-                    $(".item-ability-1").text(`Description : ${description}`);
-                    $(".item-exp").text(`Order : ${order}`);
+                    $("#" + idCollapse + " .item-id")
+                        .text(`ID: ${id}`)
+                        .show();
+                    $("#" + idCollapse + " .item-ability-2")
+                        .text(`Name : ${name}`)
+                        .show();
+                    $("#" + idCollapse + " .item-ability-1")
+                        .text(`Description : ${description}`)
+                        .show();
+                    $("#" + idCollapse + " .item-exp")
+                        .text(`Order : ${order}`)
+                        .show();
                 },
             });
         }
@@ -356,21 +394,9 @@ $(document).ready(function () {
                 type: "GET",
                 url: `${url}`,
                 success: function (data) {
-                    console.log(data);
-                    $(".item-img-1").hide();
-                    $(".item-img-2").hide();
-                    $(".item-height").hide();
-                    $(".item-weight").hide();
-                    $(".item-type-1").hide();
-                    $(".item-type-2").hide();
-                    $(".item-ability-2").hide();
-                    $(".item-ability-1").hide();
-                    $(".item-exp").hide();
-                    $(".item-name").hide();
-
-                    $(".item-id").text(
-                        "There is no data available for this section"
-                    );
+                    $("#" + idCollapse + " .item-id")
+                        .text("There is no data available for this section")
+                        .show();
                 },
             });
         }
@@ -380,19 +406,6 @@ $(document).ready(function () {
                 type: "GET",
                 url: `${url}`,
                 success: function (data) {
-                    $(".item-img-1").hide();
-                    $(".item-img-2").hide();
-
-                    $(".item-ability-1").show();
-                    $(".item-ability-2").show();
-                    $(".item-id").show();
-                    $(".item-weight").show();
-                    $(".item-name").show();
-                    $(".item-exp").show();
-                    $(".item-height").show();
-                    $(".item-type-1").show();
-                    $(".item-type-2").show();
-
                     let abilities = data["abilities"].length;
                     let id = data["id"];
                     let region = data["main_region"]["name"];
@@ -403,19 +416,33 @@ $(document).ready(function () {
                     let versionGroups1 = data["version_groups"][0]["name"];
                     let versionGroups2 = data["version_groups"][1]["name"];
 
-                    $(".item-id").text(`ID: ${id}`);
-                    $(".item-ability-1").text(`Abilities : ${abilities}`);
-                    $(".item-ability-2").text(`Main region : ${region}`);
-                    $(".item-weight").text(`Moves : ${moves}`);
-                    $(".item-height").text(`Name: ${name}`);
-                    $(".item-name").text(`Pokemon species : ${species}`);
-                    $(".item-exp").text(`Types : ${types}`);
-                    $(".item-type-1").text(
-                        `Version group 1 : ${versionGroups1}`
-                    );
-                    $(".item-type-2").text(
-                        `Version group 2 : ${versionGroups2}`
-                    );
+                    $("#" + idCollapse + " .item-id")
+                        .text(`ID: ${id}`)
+                        .show();
+                    $("#" + idCollapse + " .item-ability-1")
+                        .text(`Abilities : ${abilities}`)
+                        .show();
+                    $("#" + idCollapse + " .item-ability-2")
+                        .text(`Main region : ${region}`)
+                        .show();
+                    $("#" + idCollapse + " .item-weight")
+                        .text(`Moves : ${moves}`)
+                        .show();
+                    $("#" + idCollapse + " .item-height")
+                        .text(`Name: ${name}`)
+                        .show();
+                    $("#" + idCollapse + " .item-name")
+                        .text(`Pokemon species : ${species}`)
+                        .show();
+                    $("#" + idCollapse + " .item-exp")
+                        .text(`Types : ${types}`)
+                        .show();
+                    $("#" + idCollapse + " .item-type-1")
+                        .text(`Version group 1 : ${versionGroups1}`)
+                        .show();
+                    $("#" + idCollapse + " .item-type-2")
+                        .text(`Version group 2 : ${versionGroups2}`)
+                        .show();
                 },
             });
         }
@@ -425,32 +452,27 @@ $(document).ready(function () {
                 type: "GET",
                 url: `${url}`,
                 success: function (data) {
-                    $(".item-img-2").hide();
-                    $(".item-weight").hide();
-                    $(".item-exp").hide();
-                    $(".item-height").hide();
-                    $(".item-type-1").hide();
-                    $(".item-type-2").hide();
-
-                    $(".item-img-1").show();
-                    $(".item-id").show();
-                    $(".item-name").show();
-                    $(".item-ability-1").show();
-                    $(".item-ability-2").show();
-
                     let id = data["id"];
                     let effect = data["effect_entries"][0]["effect"];
                     let flavor = data["flavor_text_entries"][2]["text"];
                     let name = data["names"][2]["name"];
                     let img = data["sprites"]["default"];
 
-                    $(".item-img-1").attr("src", `${img}`);
-                    $(".item-id").html(`ID: ${id} <br><br>`);
-                    $(".item-name").text(`Name : ${name}`);
-                    $(".item-ability-1").html(
-                        `Effect description : ${effect} <br><br>`
-                    );
-                    $(".item-ability-2").html(`Details : ${flavor}<br><br>`);
+                    $("#" + idCollapse + " .item-img-1")
+                        .attr("src", `${img}`)
+                        .show();
+                    $("#" + idCollapse + " .item-id")
+                        .html(`ID: ${id} <br><br>`)
+                        .show();
+                    $("#" + idCollapse + " .item-name")
+                        .text(`Name : ${name}`)
+                        .show();
+                    $("#" + idCollapse + " .item-ability-1")
+                        .html(`Effect description : ${effect} <br><br>`)
+                        .show();
+                    $("#" + idCollapse + " .item-ability-2")
+                        .html(`Details : ${flavor}<br><br>`)
+                        .show();
                 },
             });
         }
@@ -460,20 +482,6 @@ $(document).ready(function () {
                 type: "GET",
                 url: `${url}`,
                 success: function (data) {
-                    // console.log(data);
-                    $(".item-img-1").hide();
-                    $(".item-img-2").hide();
-                    $(".item-height").hide();
-                    $(".item-weight").hide();
-                    $(".item-type-1").hide();
-                    $(".item-type-2").hide();
-
-                    // $(".item-name").show();
-                    // $(".item-ability-1").show();
-                    // $(".item-ability-2").show();
-                    // $(".item-id").show();
-                    // $(".item-exp").show();
-
                     let id = data["id"];
                     let gameIndex = data["game_indices"][0]["game_index"];
                     let generation =
@@ -481,11 +489,21 @@ $(document).ready(function () {
                     let name = data["names"][0]["name"];
                     let region = data["region"]["name"];
 
-                    $(".item-id").text(`ID: ${id}`);
-                    $(".item-ability-2").text(`Game index : ${gameIndex}`);
-                    $(".item-ability-1").text(`Generation : ${generation}`);
-                    $(".item-name").text(`Name : ${name}`);
-                    $(".item-exp").text(`Region: ${region}`);
+                    $("#" + idCollapse + " .item-id")
+                        .text(`ID: ${id}`)
+                        .show();
+                    $("#" + idCollapse + " .item-ability-2")
+                        .text(`Game index : ${gameIndex}`)
+                        .show();
+                    $("#" + idCollapse + " .item-ability-1")
+                        .text(`Generation : ${generation}`)
+                        .show();
+                    $("#" + idCollapse + " .item-name")
+                        .text(`Name : ${name}`)
+                        .show();
+                    $("#" + idCollapse + " .item-exp")
+                        .text(`Region: ${region}`)
+                        .show();
                 },
             });
         }
@@ -495,29 +513,23 @@ $(document).ready(function () {
                 type: "GET",
                 url: `${url}`,
                 success: function (data) {
-                    console.log(data);
-                    $(".item-img-1").hide();
-                    $(".item-img-2").hide();
-                    $(".item-height").hide();
-                    $(".item-weight").hide();
-                    $(".item-type-1").hide();
-                    $(".item-type-2").hide();
-                    $(".item-ability-2").hide();
-
-                    $(".item-name").show();
-                    $(".item-id").show();
-                    $(".item-ability-1").show();
-                    $(".item-exp").show();
-
                     let id = data["id"];
                     let item = data["item"]["name"];
                     let move = data["move"]["name"];
                     let version = data["version_group"]["name"];
 
-                    $(".item-name").text(`Item name : ${item}`);
-                    $(".item-id").text(`ID : ${id}`);
-                    $(".item-ability-1").text(`Move name : ${move}`);
-                    $(".item-exp").text(`Version group : ${version}`);
+                    $("#" + idCollapse + " .item-name")
+                        .text(`Item name : ${item}`)
+                        .show();
+                    $("#" + idCollapse + " .item-id")
+                        .text(`ID : ${id}`)
+                        .show();
+                    $("#" + idCollapse + " .item-ability-1")
+                        .text(`Move name : ${move}`)
+                        .show();
+                    $("#" + idCollapse + " .item-exp")
+                        .text(`Version group : ${version}`)
+                        .show();
                 },
             });
         }
@@ -527,20 +539,6 @@ $(document).ready(function () {
                 type: "GET",
                 url: `${url}`,
                 success: function (data) {
-                    console.log(data);
-                    $(".item-img-1").hide();
-                    $(".item-img-2").hide();
-
-                    $(".item-height").show();
-                    $(".item-weight").show();
-                    $(".item-type-1").show();
-                    $(".item-type-2").show();
-                    $(".item-ability-1").show();
-                    $(".item-ability-2").show();
-                    $(".item-exp").show();
-                    $(".item-name").show();
-                    $(".item-id").show();
-
                     let id = data["id"];
                     let accuracy = data["accuracy"];
                     let type = data["contest_type"]["name"];
@@ -551,15 +549,33 @@ $(document).ready(function () {
                     let name = data["names"][2]["name"];
                     let power = data["power"];
 
-                    $(".item-height").html(`Power : ${power} <br><br>`);
-                    $(".item-weight").text(`Generation : ${generation}`);
-                    $(".item-type-1").html(`Description : ${text} <br><br>`);
-                    $(".item-type-2").text(`Effect : ${effect}`);
-                    $(".item-ability-1").text(`Damage : ${damage}`);
-                    $(".item-ability-2").text(`Type : ${type}`);
-                    $(".item-exp").text(`Accuracy : ${accuracy}`);
-                    $(".item-name").text(`Name : ${name}`);
-                    $(".item-id").text(`ID : ${id}`);
+                    $("#" + idCollapse + " .item-height")
+                        .html(`Power : ${power} <br><br>`)
+                        .show();
+                    $("#" + idCollapse + " .item-weight")
+                        .text(`Generation : ${generation}`)
+                        .show();
+                    $("#" + idCollapse + " .item-type-1")
+                        .html(`Description : ${text} <br><br>`)
+                        .show();
+                    $("#" + idCollapse + " .item-type-2")
+                        .text(`Effect : ${effect}`)
+                        .show();
+                    $("#" + idCollapse + " .item-ability-1")
+                        .text(`Damage : ${damage}`)
+                        .show();
+                    $("#" + idCollapse + " .item-ability-2")
+                        .text(`Type : ${type}`)
+                        .show();
+                    $("#" + idCollapse + " .item-exp")
+                        .text(`Accuracy : ${accuracy}`)
+                        .show();
+                    $("#" + idCollapse + " .item-name")
+                        .text(`Name : ${name}`)
+                        .show();
+                    $("#" + idCollapse + " .item-id")
+                        .text(`ID : ${id}`)
+                        .show();
                 },
             });
         }
@@ -569,17 +585,6 @@ $(document).ready(function () {
                 type: "GET",
                 url: `${url}`,
                 success: function (data) {
-                    $(".item-img-1").show();
-                    $(".item-img-2").show();
-                    $(".item-height").show();
-                    $(".item-weight").show();
-                    $(".item-type-1").show();
-                    $(".item-type-2").show();
-                    $(".item-ability-2").show();
-                    $(".item-ability-1").show();
-                    $(".item-exp").show();
-                    $(".item-name").show();
-
                     let ability = data["abilities"];
                     if (ability > 1) {
                         let ability2 = data["abilities"][1]["ability"]["name"];
@@ -602,15 +607,30 @@ $(document).ready(function () {
                     let type1 = data["types"][0]["type"]["name"];
                     let weight = data["weight"];
 
-                    $(".item-ability-1").text(`Ability no. 1 : ${ability1}`);
-                    $(".item-exp").text(`Experience: ${exp}`);
-                    $(".item-height").text(`Height: ${height}`);
-                    $(".item-id").text(`ID: ${id}`);
-                    $(".item-name").text(`Name: ${name}`);
-                    $(".item-img-1").attr("src", `${img1}`);
-                    $(".item-img-2").attr("src", `${img2}`);
-                    $(".item-type-1").text(`Type no. 1 : ${type1}`);
-                    $(".item-weight").text(`Weight: ${weight}`);
+                    $("#" + idCollapse + " .item-ability-1")
+                        .text(`Ability no. 1 : ${ability1}`)
+                        .show();
+                    $("#" + idCollapse + " .item-height")
+                        .text(`Height: ${height}`)
+                        .show();
+                    $("#" + idCollapse + " .item-id")
+                        .text(`ID: ${id}`)
+                        .show();
+                    $("#" + idCollapse + " .item-name")
+                        .text(`Name: ${name}`)
+                        .show();
+                    $("#" + idCollapse + " .item-img-1")
+                        .attr("src", `${img1}`)
+                        .show();
+                    $("#" + idCollapse + " .item-img-2")
+                        .attr("src", `${img2}`)
+                        .show();
+                    $("#" + idCollapse + " .item-type-1")
+                        .text(`Type no. 1 : ${type1}`)
+                        .show();
+                    $("#" + idCollapse + " .item-weight")
+                        .text(`Weight: ${weight}`)
+                        .show();
                 },
             });
         }
