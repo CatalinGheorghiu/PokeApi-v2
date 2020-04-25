@@ -40,6 +40,11 @@ ul {
     list-style-type: none;
 }
 
+h1 {
+    font-weight: 900;
+
+}
+
 span.item {
     /* border: 2px solid; */
     padding: 0.75rem;
@@ -48,10 +53,10 @@ span.item {
 button.btn.btn-success.item {
     width: 10rem;
 }
+img {
+    width: 10vw;
+}
 
 .hide {
     display: none;
-}
-.red{
-    color: red;
 }

@@ -1,4 +1,4 @@
-//
+//DOM Elements
 let pokeListIds = document.querySelectorAll(".id");
 let pokeListItems = document.querySelectorAll(".item");
 let pokeListItemsDetails = document.querySelectorAll(".item-details");
@@ -82,7 +82,7 @@ $(document).ready(function () {
 
     /* 
 #############################################################
-##        Fetch  data from the API                                                             ####
+##                             FUNCTIONS                                                          ####
 #############################################################        
 */
     function fetchOnClick(item, limit, offset = 0) {
@@ -92,7 +92,7 @@ $(document).ready(function () {
             e.preventDefault();
         };
     }
-
+    //Add attributes on click
     for (const pokeListItem of pokeListItems) {
         pokeListItem.addEventListener("click", function (e) {
             e.preventDefault();
@@ -102,27 +102,28 @@ $(document).ready(function () {
             fetchDetails(itemUrl, dataType, idCollapse);
         });
     }
-
+    //Upper case the first letter
     function capitalizeFirstLetter(string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
     }
-
+    //Fetch the DATA
     function fetchData(item, limit, offset = 0) {
         $.ajax({
             type: "GET",
             url: `https://pokeapi.co/api/v2/${item}/?offset=${offset}&&limit=${limit}`,
             success: function (data) {
+                $(".card").show();
                 $(".section-title").empty();
+                //Add the title with the number of items
                 let itemName = capitalizeFirstLetter(`${item}`);
                 $(".section-title").append(`${itemName} (${data.count})`);
-
                 $(".id").empty();
                 $(".item").empty();
                 $(".container").show();
-
                 $("#next").show();
                 $("#prev").show();
 
+                //NEXT && PREVIOUS URL from the fetched data
                 const next = data.next;
                 const prev = data.previous;
                 //If the next URL is available
@@ -158,7 +159,6 @@ $(document).ready(function () {
                     //Html item && id
                     const pokeListItem = pokeListItems[i];
                     const pokeListId = pokeListIds[i];
-                    const pokeListItemsDetail = pokeListItemsDetails[i];
 
                     //Data object
                     const resultData = dataResults[i];
@@ -167,16 +167,19 @@ $(document).ready(function () {
                     let name = resultData["name"];
                     //Id from Url
                     const url = resultData["url"];
+                    //Split the URL
                     let splitUrl = url.split("/");
+                    //Get the id from the URL
                     let idFromUrl = splitUrl[splitUrl.length - 2];
+                    //Get the type of item from URL
                     let dataType = splitUrl[splitUrl.length - 3];
 
                     //Fill the HTML with the data
                     pokeListId.textContent = idFromUrl;
-                    // pokeListItemsDetail.textContent = url;
+                    //Set attributes to the item
                     pokeListItem.setAttribute("data-id", `${url}`);
                     pokeListItem.setAttribute("data-type-list", `${dataType}`);
-
+                    //If the item doesn't have a name...
                     if (name == undefined || name == null) {
                         pokeListItem.textContent = "Details";
                     } else {
@@ -184,53 +187,13 @@ $(document).ready(function () {
                     }
                 }
 
-                // if (dataResults.length < cards.length) {
-                //     for (let i = 0; i <= cards.length; i++) {
-                //         console.log(i > dataResults.length);
-                //         if (i == 1) {
-                //             i > dataResults.length
-                //                 ? $("#headingOne").hide()
-                //                 : $("#headingOne").show();
-                //         } else if (i == 2) {
-                //             i > dataResults.length
-                //                 ? $("#headingTwo").hide()
-                //                 : $("#headingTwo").show();
-                //         } else if (i == 3) {
-                //             i > dataResults.length
-                //                 ? $("#headingThree").hide()
-                //                 : $("#headingThree").show();
-                //         } else if (i == 4) {
-                //             i > dataResults.length
-                //                 ? $("#headingFour").hide()
-                //                 : $("#headingFour").show();
-                //         } else if (i == 5) {
-                //             i > dataResults.length
-                //                 ? $("#headingFive").hide()
-                //                 : $("#headingFive").show();
-                //         } else if (i == 6) {
-                //             i > dataResults.length
-                //                 ? $("#headingSix").hide()
-                //                 : $("#headingSix").show();
-                //         } else if (i == 7) {
-                //             i > dataResults.length
-                //                 ? $("#headingSeven").hide()
-                //                 : $("#headingSeven").show();
-                //         } else if (i == 8) {
-                //             i > dataResults.length
-                //                 ? $("#headingEight").hide()
-                //                 : $("#headingEight").show();
-                //         } else if (i == 9) {
-                //             i > dataResults.length
-                //                 ? $("#headingNine").hide()
-                //                 : $("#headingNine").show();
-                //         } else if (i == 10) {
-                //             i > dataResults.length
-                //                 ? $("#headingTen").hide()
-                //                 : $("#headingTen").show();
-                //         }
-                //         //----- etc ----//
-                //     }
-                // }
+                //Hide the empty elements
+                for (let i = 0; i <= cards.length; i++) {
+                    $(".card")
+                        .hide()
+                        .filter(":nth-child(-n+" + dataResults.length + ")")
+                        .show();
+                }
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 console.log(jqXHR);
@@ -239,20 +202,21 @@ $(document).ready(function () {
             },
         });
     }
-
+    //Fetch the DETAILS
     function fetchDetails(url, dataType, idCollapse) {
-        $(".item-img-1").hide();
-        $(".item-img-2").hide();
-
-        $(".item-ability-1").hide();
-        $(".item-ability-2").hide();
-        $(".item-id").hide();
-        $(".item-weight").hide();
-        $(".item-name").hide();
-        $(".item-exp").hide();
-        $(".item-height").hide();
-        $(".item-type-1").hide();
-        $(".item-type-2").hide();
+        //Hide the DOM elements
+        $("#" + idCollapse + " .item-img-1").hide();
+        $("#" + idCollapse + " .item-img-2").hide();
+        $("#" + idCollapse + " .item-ability-1").hide();
+        $("#" + idCollapse + " .item-ability-2").hide();
+        $("#" + idCollapse + " .item-id").hide();
+        $("#" + idCollapse + " .item-weight").hide();
+        $("#" + idCollapse + " .item-name").hide();
+        $("#" + idCollapse + " .item-exp").hide();
+        $("#" + idCollapse + " .item-height").hide();
+        $("#" + idCollapse + " .item-type-1").hide();
+        $("#" + idCollapse + " .item-type-2").hide();
+        //Check witch type of item is called
         switch (dataType) {
             case "berry":
                 fetchDetailsBerry(url);
@@ -299,13 +263,11 @@ $(document).ready(function () {
                     let id = data["id"];
                     let item = data["item"]["name"];
                     let harvest = data["max_harvest"];
-                    let name = data["name"];
+                    let name = capitalizeFirstLetter(data["name"]);
                     let power = data["natural_gift_power"];
                     let gift = data["natural_gift_type"]["name"];
                     let size = data["size"];
-                    let smooth = data["smoothness"];
-                    let soil = data["soil_dryness"];
-
+                    //Add the DATA to the DOM element and display it
                     $("#" + idCollapse + " .item-ability-1")
                         .text(`Firmness : ${firmness}`)
                         .show();
@@ -319,7 +281,7 @@ $(document).ready(function () {
                         .text(`Item : ${item}`)
                         .show();
                     $("#" + idCollapse + " .item-name")
-                        .text(`Item : ${name}`)
+                        .text(`Name : ${name}`)
                         .show();
                     $("#" + idCollapse + " .item-exp")
                         .text(`Max harvest : ${harvest}`)
@@ -344,13 +306,13 @@ $(document).ready(function () {
                 success: function (data) {
                     let flavor = data["berry_flavor"]["name"];
                     let id = data["id"];
-                    let name = data["name"];
+                    let name = capitalizeFirstLetter(data["name"]);
                     let color = data["names"][0]["color"];
-
+                    //Add the DATA to the DOM element and display it
                     $("#" + idCollapse + " .item-ability-1")
                         .text(`Flavor : ${flavor}`)
                         .show();
-                    $("#" + idCollapse + " .item-ability-2")
+                    $("#" + idCollapse + " .item-name")
                         .text(`Name : ${name}`)
                         .show();
                     $("#" + idCollapse + " .item-id")
@@ -369,10 +331,10 @@ $(document).ready(function () {
                 url: `${url}`,
                 success: function (data) {
                     let id = data["id"];
-                    let name = data["name"];
+                    let name = capitalizeFirstLetter(data["name"]);
                     let description = data["names"][1]["name"];
                     let order = data["order"];
-
+                    //Add the DATA to the DOM element and display it
                     $("#" + idCollapse + " .item-id")
                         .text(`ID: ${id}`)
                         .show();
@@ -415,7 +377,7 @@ $(document).ready(function () {
                     let types = data["types"].length;
                     let versionGroups1 = data["version_groups"][0]["name"];
                     let versionGroups2 = data["version_groups"][1]["name"];
-
+                    //Add the DATA to the DOM element and display it
                     $("#" + idCollapse + " .item-id")
                         .text(`ID: ${id}`)
                         .show();
@@ -457,7 +419,7 @@ $(document).ready(function () {
                     let flavor = data["flavor_text_entries"][2]["text"];
                     let name = data["names"][2]["name"];
                     let img = data["sprites"]["default"];
-
+                    //Add the DATA to the DOM element and display it
                     $("#" + idCollapse + " .item-img-1")
                         .attr("src", `${img}`)
                         .show();
@@ -488,7 +450,7 @@ $(document).ready(function () {
                         data["game_indices"][0]["generation"]["name"];
                     let name = data["names"][0]["name"];
                     let region = data["region"]["name"];
-
+                    //Add the DATA to the DOM element and display it
                     $("#" + idCollapse + " .item-id")
                         .text(`ID: ${id}`)
                         .show();
@@ -517,7 +479,7 @@ $(document).ready(function () {
                     let item = data["item"]["name"];
                     let move = data["move"]["name"];
                     let version = data["version_group"]["name"];
-
+                    //Add the DATA to the DOM element and display it
                     $("#" + idCollapse + " .item-name")
                         .text(`Item name : ${item}`)
                         .show();
@@ -548,7 +510,7 @@ $(document).ready(function () {
                     let generation = data["generation"]["name"];
                     let name = data["names"][2]["name"];
                     let power = data["power"];
-
+                    //Add the DATA to the DOM element and display it
                     $("#" + idCollapse + " .item-height")
                         .html(`Power : ${power} <br><br>`)
                         .show();
@@ -586,8 +548,10 @@ $(document).ready(function () {
                 url: `${url}`,
                 success: function (data) {
                     let ability = data["abilities"];
+                    //If there is more than one ability ...
                     if (ability > 1) {
                         let ability2 = data["abilities"][1]["ability"]["name"];
+                        //Display ability
                         $(".item-ability-2").text(
                             `Ability no. 2 : ${ability2}`
                         );
@@ -596,7 +560,7 @@ $(document).ready(function () {
                     let exp = data["base_experience"];
                     let height = data["height"];
                     let id = data["id"];
-                    let name = data["name"];
+                    let name = capitalizeFirstLetter(data["name"]);
                     let img1 = data["sprites"]["front_default"];
                     let img2 = data["sprites"]["back_default"];
                     let type = data["types"];
@@ -635,6 +599,7 @@ $(document).ready(function () {
             });
         }
 
+        //Show errors
         function showError(dataType) {
             console.log(`${dataType} error`);
         }
